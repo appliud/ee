@@ -20,7 +20,6 @@ public class UserTest {
     public void selectUserId(){
         Integer id=3;
         User user = userMapper.getUserById(id);
-        log.info("selectUserId:{}",user);
     }
 
     /**
