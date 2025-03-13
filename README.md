@@ -28,6 +28,11 @@
 - **MyBatis**  
   持久层框架，简化数据库操作。
 
+- **logback**
+  日志框架，用于记录应用程序的运行日志。
+- **slf4j**
+  日志门面，提供统一的日志接口。
+
 ### 实例
 - **UserTest.java**
   ![updateUser](./imgma/updateUser.png)
