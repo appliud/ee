@@ -1,9 +1,11 @@
-import com.wrr.mapper.UserMapper;
 import com.wrr.pojo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import com.wrr.mapper.UserMapper;
 
 import java.util.List;
+
+
 
 @Slf4j
 public class UserTest {

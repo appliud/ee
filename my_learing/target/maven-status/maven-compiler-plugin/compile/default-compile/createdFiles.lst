@@ -1,0 +1,3 @@
+com\wrr\pojo\User.class
+com\wrr\util\MyBatisUtil.class
+com\wrr\mapper\UserMapper.class
