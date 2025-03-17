@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="my_learing" />
+        <module name="jsp" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
