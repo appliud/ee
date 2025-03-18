@@ -11,6 +11,11 @@ import com.wrr.pojo.Result;
 
 import java.util.List;
 
+/**
+ * @author wrr
+ * @date 2025/03/18
+ * @desc student controller
+ */
 @RequestMapping("/student")
 @RestController
 public class StudentComtroller {

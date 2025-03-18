@@ -5,6 +5,11 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+/**
+ * @author wrr
+ * @create 2025/03/18
+ * @desc  数据库操作接口
+ */
 @Mapper
 public interface StudentMapper {
     @Select("select * from student")

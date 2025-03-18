@@ -3,6 +3,8 @@ package com.wrr.pojo;
 import lombok.Data;
 
 /**
+ * @author wrr
+ * @date 2025/03/18 14:07
  * 后端统一返回结果
  */
 @Data
