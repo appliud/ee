@@ -1,0 +1,29 @@
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            students: [],
+            newStudent: {
+                name: '',
+                age: '',
+                sex: '',
+                address: '',
+                phone: ''
+            }
+        },
+        methods: {
+            fetchStudents() {
+                axios.get('/student')
+                    .then(response => {
+                        this.students = response.data.data;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+        },
+        mounted() {
+            this.fetchStudents(); // 确保在页面加载时调用 fetchStudents 方法
+        }
+    });
+</script>

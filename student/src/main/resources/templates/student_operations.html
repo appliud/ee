@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生操作</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        /* 优化后的样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <h1>学生操作</h1>
+    <button class="btn btn-primary" @click="showAddModal = true; editMode = false">添加学生</button>
+
+    <div id="addStudentModal" class="modal" :class="{ 'show': showAddModal }">
+        <div class="modal-content">
+            <span class="close" @click="resetForm()">&times;</span>
+            <h2>{{ editMode ? '编辑学生' : '添加学生' }}</h2>
+            <div class="form-group">
+                <label for="name">姓名</label>
+                <input type="text" id="name" v-model="currentStudent.name" placeholder="输入学生姓名">
+            </div>
+            <div class="form-group">
+                <label for="age">年龄</label>
+                <select id="age" v-model="currentStudent.age">
+                    <option v-for="age in ageOptions" :key="age" :value="age">{{ age }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sex">性别</label>
+                <select id="sex" v-model="currentStudent.sex">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="address">地址</label>
+                <input type="text" id="address" v-model="currentStudent.address" placeholder="输入学生地址">
+            </div>
+            <div class="form-group">
+                <label for="phone">电话</label>
+                <input type="text" id="phone" v-model="currentStudent.phone" placeholder="输入学生电话">
+            </div>
+            <button class="btn btn-primary" @click="editMode ? updateStudent() : addStudent()">确定</button>
+            <button class="btn btn-danger" @click="resetForm()">取消</button>
+        </div>
+    </div>
+
+    <h2>学生列表</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>地址</th>
+            <th>电话</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="student in students" :key="student.id">
+            <td>{{ student.name }}</td>
+            <td>{{ student.age }}</td>
+            <td>{{ student.sex }}</td>
+            <td>{{ student.address }}</td>
+            <td>{{ student.phone }}</td>
+            <td>
+                <button class="btn btn-primary" @click="editStudent(student)">编辑</button>
+                <button class="btn btn-danger" @click="deleteStudent(student.id)">删除</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            students: [],
+            currentStudent: { // 用于存储当前操作的学生信息
+                id:'',
+                name: '',
+                age: '',
+                sex: '',
+                address: '',
+                phone: ''
+            },
+            showAddModal: false,
+            editMode: false, // 新增：标识当前是否处于编辑模式
+            ageOptions: Array.from({ length: 9 }, (_, i) => 18 + i) // 添加：年龄选项
+        },
+        methods: {
+            fetchStudents() {
+                axios.get('http://localhost:8080/student')
+                    .then(response => {
+                        this.students = response.data.data;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            resetForm() {
+                this.currentStudent = { id:'', name: '', age: '', sex: '', address: '', phone: '' };
+                this.showAddModal = false;
+                this.editMode = false;
+            },
+            editStudent(student) {
+                // 填充当前学生信息到表单
+                this.currentStudent = { ...student };
+                this.showAddModal = true;
+                this.editMode = true;
+            },
+            updateStudent() {
+                axios.put('http://localhost:8080/student', this.currentStudent)
+                    .then(() => {
+                        this.resetForm();
+                        alert('学生更新成功');
+                        this.fetchStudents(); // 刷新学生列表
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            addStudent() {
+                if (!this.currentStudent.name || !this.currentStudent.age || !this.currentStudent.sex || !this.currentStudent.address || !this.currentStudent.phone) {
+                    alert('请填写所有字段');
+                    return;
+                }
+                axios.post('http://localhost:8080/student', this.currentStudent)
+                    .then(response => {
+                        this.students.push(response.data.data);
+                        this.resetForm();
+                        alert('学生添加成功');
+                        this.fetchStudents(); // 添加：刷新学生列表
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            },
+            deleteStudent(id) {
+                if (confirm('确定要删除该学生吗？')) {
+                    axios.delete('http://localhost:8080/student/' + id)
+                        .then(() => {
+                            this.students = this.students.filter(student => student.id !== id);
+                            alert('学生删除成功');
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                }
+            }
+        },
+        mounted() {
+            this.fetchStudents();
+        }
+    });
+</script>
+</body>
+</html>
