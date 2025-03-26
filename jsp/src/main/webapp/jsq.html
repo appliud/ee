@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>简单计算器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+    }
+    .calculator {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+    .input-field {
+      width: calc(100% - 22px);
+      padding: 10px;
+      margin: 10px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+    @media (max-width: 600px) {
+      .calculator {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="calculator">
+  <h1>简单计算器</h1>
+  <form id="calculatorForm" onsubmit="event.preventDefault(); calculate();">
+    <input type="text" id="number1" placeholder="输入第一个数字" class="input-field" required>
+    <input type="text" id="number2" placeholder="输入第二个数字" class="input-field" required>
+    <select id="operator" class="input-field" required>
+      <option value="add">+</option>
+      <option value="subtract">-</option>
+      <option value="multiply">*</option>
+      <option value="divide">/</option>
+    </select>
+    <button type="submit">计算</button>
+  </form>
+  <p id="result"></p>
+  <button class="reset-button">重置</button>
+  <!-- 添加返回首页按钮 -->
+  <a href="index.jsp" class="reset-button">返回首页</a>
+</div>
+
+<script>
+  function calculate() {
+    const num1 = parseFloat(document.getElementById('number1').value);
+    const num2 = parseFloat(document.getElementById('number2').value);
+    const operator = document.getElementById('operator').value;
+
+    if (isNaN(num1) || isNaN(num2)) {
+      showError('请输入有效的数字');
+      return;
+    }
+
+    let result;
+    switch (operator) {
+      case 'add':
+        result = num1 + num2;
+        break;
+      case 'subtract':
+        result = num1 - num2;
+        break;
+      case 'multiply':
+        result = num1 * num2;
+        break;
+      case 'divide':
+        if (num2 === 0) {
+          showError('除数不能为零');
+          return;
+        }
+        result = (num1 / num2).toFixed(2);
+        break;
+      default:
+        showError('无效的操作');
+        return;
+    }
+
+    showResult(result);
+  }
+
+  function showError(message) {
+    document.getElementById('result').innerText = message;
+  }
+
+  function showResult(result) {
+    document.getElementById('result').innerText = '结果: ' + result;
+  }
+
+  document.querySelector('.reset-button').addEventListener('click', () => {
+    document.getElementById('number1').value = '';
+    document.getElementById('number2').value = '';
+    document.getElementById('result').innerText = '';
+  });
+
+  document.getElementById('calculatorForm').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      calculate();
+    }
+  });
+</script>
+</body>
+</html>
