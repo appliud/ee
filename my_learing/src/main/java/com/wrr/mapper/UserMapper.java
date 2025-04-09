@@ -2,15 +2,18 @@ package com.wrr.mapper;
 
 import com.wrr.pojo.User;
 import com.wrr.util.MyBatisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * @author 36153
+ */
+@Slf4j
 public class UserMapper {
-
-    private static final Logger log = LoggerFactory.getLogger(UserMapper.class);
 
     public void addUser(User user){
         try(SqlSession session = MyBatisUtil.getSession()){
@@ -46,7 +49,7 @@ public class UserMapper {
         User user = null;
         try(SqlSession session = MyBatisUtil.getSession()){
             user = session.selectOne("getUserById",id);
-            log.debug("查询成功");
+            log.debug("查询成功 {}", user);
             session.commit();
         }
         catch (Exception e){
@@ -77,5 +80,18 @@ public class UserMapper {
             e.printStackTrace();
         }
         return user;
+    }
+
+    public Integer getMaxId(){
+        Integer id = null;
+        try(SqlSession session = MyBatisUtil.getSession()){
+            id = session.selectOne("getMaxId");
+            log.debug("查询成功 id{}",id);
+            session.commit();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return id;
     }
 }

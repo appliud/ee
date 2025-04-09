@@ -1,55 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>简单计算器</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      background-color: #f4f4f9;
-    }
-    .calculator {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 300px;
-      text-align: center;
-    }
-    .input-field {
-      width: calc(100% - 22px);
-      padding: 10px;
-      margin: 10px 0;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #333;
     }
+
+    .calculator {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 2em;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 3px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    select.input-field {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 1em;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 10px 0;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #result {
+      margin: 20px 0;
+      padding: 15px;
+      font-size: 1.2em;
+      color: #2c3e50;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      min-height: 20px;
+    }
+
+    .error {
+      color: #e74c3c;
+      background: rgba(231, 76, 60, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .nav-buttons a {
+      flex: 1;
+      text-decoration: none;
+      color: white;
+    }
+
     @media (max-width: 600px) {
       .calculator {
         width: 90%;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
       }
     }
   </style>
@@ -58,73 +147,97 @@
 <div class="calculator">
   <h1>简单计算器</h1>
   <form id="calculatorForm" onsubmit="event.preventDefault(); calculate();">
-    <input type="text" id="number1" placeholder="输入第一个数字" class="input-field" required>
-    <input type="text" id="number2" placeholder="输入第二个数字" class="input-field" required>
-    <select id="operator" class="input-field" required>
-      <option value="add">+</option>
-      <option value="subtract">-</option>
-      <option value="multiply">*</option>
-      <option value="divide">/</option>
-    </select>
+    <div class="input-group">
+      <input type="number" id="number1" placeholder="输入第一个数字" class="input-field" required>
+      <input type="number" id="number2" placeholder="输入第二个数字" class="input-field" required>
+      <select id="operator" class="input-field" required>
+        <option value="add">+</option>
+        <option value="subtract">-</option>
+        <option value="multiply">×</option>
+        <option value="divide">÷</option>
+      </select>
+    </div>
     <button type="submit">计算</button>
   </form>
-  <p id="result"></p>
-  <button class="reset-button">重置</button>
-  <!-- 添加返回首页按钮 -->
-  <a href="index.jsp" class="reset-button">返回首页</a>
+  <div id="result"></div>
+  <div class="nav-buttons">
+    <button onclick="resetForm()">重置</button>
+    <a href="index.jsp"><button type="button">返回首页</button></a>
+  </div>
 </div>
 
 <script>
   function calculate() {
-    const num1 = parseFloat(document.getElementById('number1').value);
-    const num2 = parseFloat(document.getElementById('number2').value);
+    const num1 = document.getElementById('number1').value;
+    const num2 = document.getElementById('number2').value;
     const operator = document.getElementById('operator').value;
+    const resultDiv = document.getElementById('result');
 
-    if (isNaN(num1) || isNaN(num2)) {
-      showError('请输入有效的数字');
+    // 检查输入是否为空
+    if (!num1 || !num2) {
+      showError('请输入数字');
       return;
     }
 
+    // 转换为数字
+    const number1 = parseFloat(num1);
+    const number2 = parseFloat(num2);
+
     let result;
+    let operationSymbol;
+    
     switch (operator) {
       case 'add':
-        result = num1 + num2;
+        result = number1 + number2;
+        operationSymbol = '+';
         break;
       case 'subtract':
-        result = num1 - num2;
+        result = number1 - number2;
+        operationSymbol = '-';
         break;
       case 'multiply':
-        result = num1 * num2;
+        result = number1 * number2;
+        operationSymbol = '×';
         break;
       case 'divide':
-        if (num2 === 0) {
+        if (number2 === 0) {
           showError('除数不能为零');
           return;
         }
-        result = (num1 / num2).toFixed(2);
+        result = number1 / number2;
+        operationSymbol = '÷';
         break;
       default:
         showError('无效的操作');
         return;
     }
 
-    showResult(result);
+    // 处理小数位数
+    if (result % 1 !== 0) {
+      result = parseFloat(result.toFixed(4));
+    }
+
+    showResult(`${number1} ${operationSymbol} ${number2} = ${result}`);
   }
 
   function showError(message) {
-    document.getElementById('result').innerText = message;
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `<div class="error">${message}</div>`;
   }
 
   function showResult(result) {
-    document.getElementById('result').innerText = '结果: ' + result;
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = result;
   }
 
-  document.querySelector('.reset-button').addEventListener('click', () => {
+  function resetForm() {
     document.getElementById('number1').value = '';
     document.getElementById('number2').value = '';
-    document.getElementById('result').innerText = '';
-  });
+    document.getElementById('operator').value = 'add';
+    document.getElementById('result').innerHTML = '';
+  }
 
+  // 支持回车键计算
   document.getElementById('calculatorForm').addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       calculate();

@@ -7,4 +7,43 @@
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
+    <!-- 添加对img目录的访问映射 -->
+    <servlet>
+        <servlet-name>imgServlet</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>imgServlet</servlet-name>
+        <url-pattern>/img/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- 添加对music目录的访问映射 -->
+    <servlet>
+        <servlet-name>musicServlet</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>musicServlet</servlet-name>
+        <url-pattern>/music/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- 确保img和music目录是开放的 -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>img</web-resource-name>
+            <url-pattern>/img/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <!-- 没有认证要求 -->
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>music</web-resource-name>
+            <url-pattern>/music/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <!-- 没有认证要求 -->
+        </auth-constraint>
+    </security-constraint>
 </web-app>

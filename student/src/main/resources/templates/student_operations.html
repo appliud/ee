@@ -7,14 +7,13 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
-        /* 优化后的样式 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 20px;
         }
-
+    
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -23,11 +22,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
-
+    
         h1, h2 {
             color: #333;
+            text-align: center;
         }
-
+    
         .btn {
             padding: 10px 20px;
             margin: 5px;
@@ -35,24 +35,25 @@
             border-radius: 5px;
             cursor: pointer;
             color: white;
+            transition: background-color 0.3s ease;
         }
-
+    
         .btn-primary {
             background-color: #007bff;
         }
-
+    
         .btn-primary:hover {
             background-color: #0056b3;
         }
-
+    
         .btn-danger {
             background-color: #dc3545;
         }
-
+    
         .btn-danger:hover {
             background-color: #c82333;
         }
-
+    
         .modal {
             display: none;
             position: fixed;
@@ -64,11 +65,11 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.4);
         }
-
+    
         .modal.show {
             display: block;
         }
-
+    
         .modal-content {
             background-color: #fefefe;
             margin: 15% auto;
@@ -79,45 +80,123 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-
+    
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
-
+    
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
-
+    
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 25px;
         }
-
+    
         th, td {
-            padding: 12px;
+            padding: 5px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 5px solid #ddd;
         }
-
+    
         th {
             background-color: #f2f2f2;
         }
-
+    
         tr:hover {
             background-color: #f1f1f1;
+        }
+    
+        /* 添加搜索表单样式 */
+        .search-form {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .search-form input, .search-form select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1 1 45%; /* 使输入框在小屏幕上能够自适应 */
+        }
+        
+        .search-form button {
+            margin: 5px;
+            flex: 1 1 45%; /* 使按钮在小屏幕上能够自适应 */
+        }
+        
+        .form-group {
+            margin-bottom: 5px;
+        }
+        
+        .form-group label {
+            display: inline-block;
+            width: 80px;
         }
     </style>
 </head>
 <body>
 <div class="container" id="app">
     <h1>学生操作</h1>
+    
+    <!-- 添加搜索表单 -->
+    <div class="search-form">
+        <h3>学生信息查询</h3>
+        <div class="form-group">
+            <label>ID范围：</label>
+            <input type="number" v-model="searchForm.startId" placeholder="起始ID" min="1">
+            <span>至</span>
+            <input type="number" v-model="searchForm.endId" placeholder="结束ID" min="1">
+        </div>
+        <div class="form-group">
+            <label for="searchName">姓名：</label>
+            <input type="text" id="searchName" v-model="searchForm.name" placeholder="输入学生姓名">
+        </div>
+        <div class="form-group">
+            <label for="searchAge">年龄：</label>
+            <select id="searchAge" v-model="searchForm.age">
+                <option value="">全部</option>
+                <option v-for="age in ageOptions" :key="age" :value="age">{{ age }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="searchSex">性别：</label>
+            <select id="searchSex" v-model="searchForm.sex">
+                <option value="">全部</option>
+                <option value="男">男</option>
+                <option value="女">女</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="searchMajor">专业：</label>
+            <input type="text" id="searchMajor" v-model="searchForm.major" placeholder="输入学生专业">
+        </div>
+        <div class="form-group">
+            <label for="searchAddress">地址：</label>
+            <input type="text" id="searchAddress" v-model="searchForm.address" placeholder="输入学生地址">
+        </div>
+        <div class="form-group">
+            <label for="searchPhone">电话：</label>
+            <input type="text" id="searchPhone" v-model="searchForm.phone" placeholder="输入学生电话">
+        </div>
+        <button class="btn btn-primary" @click="searchStudents">查询</button>
+        <button class="btn btn-primary" @click="resetSearchForm">重置</button>
+    </div>
+
     <button class="btn btn-primary" @click="showAddModal = true; editMode = false">添加学生</button>
 
     <div id="addStudentModal" class="modal" :class="{ 'show': showAddModal }">
@@ -149,6 +228,10 @@
                 <label for="phone">电话</label>
                 <input type="text" id="phone" v-model="currentStudent.phone" placeholder="输入学生电话">
             </div>
+            <div class="form-group">
+                <label for="major">专业</label>
+                <input type="text" id="major" v-model="currentStudent.major" placeholder="输入学生专业">
+            </div>
             <button class="btn btn-primary" @click="editMode ? updateStudent() : addStudent()">确定</button>
             <button class="btn btn-danger" @click="resetForm()">取消</button>
         </div>
@@ -158,21 +241,25 @@
     <table>
         <thead>
         <tr>
+            <th>ID</th>
             <th>姓名</th>
             <th>年龄</th>
             <th>性别</th>
             <th>地址</th>
             <th>电话</th>
+            <th>专业</th>
             <th>操作</th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="student in students" :key="student.id">
+            <td>{{ student.id }}</td>
             <td>{{ student.name }}</td>
             <td>{{ student.age }}</td>
             <td>{{ student.sex }}</td>
             <td>{{ student.address }}</td>
             <td>{{ student.phone }}</td>
+            <td>{{ student.major }}</td>
             <td>
                 <button class="btn btn-primary" @click="editStudent(student)">编辑</button>
                 <button class="btn btn-danger" @click="deleteStudent(student.id)">删除</button>
@@ -187,17 +274,29 @@
         el: '#app',
         data: {
             students: [],
-            currentStudent: { // 用于存储当前操作的学生信息
+            currentStudent: {
                 id:'',
                 name: '',
                 age: '',
                 sex: '',
                 address: '',
-                phone: ''
+                phone: '',
+                major: ''
+            },
+            searchForm: {
+                id: '',
+                name: '',
+                age: '',
+                sex: '',
+                major: '',
+                address: '',
+                phone: '',
+                startId: '',
+                endId: ''
             },
             showAddModal: false,
-            editMode: false, // 新增：标识当前是否处于编辑模式
-            ageOptions: Array.from({ length: 9 }, (_, i) => 18 + i) // 添加：年龄选项
+            editMode: false,
+            ageOptions: Array.from({ length: 9 }, (_, i) => 18 + i)
         },
         methods: {
             fetchStudents() {
@@ -210,7 +309,15 @@
                     });
             },
             resetForm() {
-                this.currentStudent = { id:'', name: '', age: '', sex: '', address: '', phone: '' };
+                this.currentStudent = {
+                    id:'',
+                    name: '',
+                    age: '',
+                    sex: '',
+                    address: '',
+                    phone: '',
+                    major: ''
+                };
                 this.showAddModal = false;
                 this.editMode = false;
             },
@@ -258,6 +365,62 @@
                             console.log(error);
                         });
                 }
+            },
+            searchStudents() {
+                // 构建查询参数
+                const searchParams = { ...this.searchForm };
+                
+                // 如果设置了ID范围，使用范围查询
+                if (searchParams.startId && searchParams.endId) {
+                    if (parseInt(searchParams.startId) > parseInt(searchParams.endId)) {
+                        alert('起始ID不能大于结束ID');
+                        return;
+                    }
+                    axios.get('http://localhost:8080/student/range', {
+                        params: {
+                            startId: searchParams.startId,
+                            endId: searchParams.endId
+                        }
+                    })
+                    .then(response => {
+                        this.students = response.data.data;
+                    })
+                    .catch(error => {
+                        console.error('查询失败:', error);
+                        alert('查询失败');
+                    });
+                } else {
+                    // 移除空值参数
+                    Object.keys(searchParams).forEach(key => {
+                        if (!searchParams[key]) {
+                            delete searchParams[key];
+                        }
+                    });
+                    
+                    // 使用多条件查询
+                    axios.post('http://localhost:8080/student/search', searchParams)
+                        .then(response => {
+                            this.students = response.data.data;
+                        })
+                        .catch(error => {
+                            console.error('查询失败:', error);
+                            alert('查询失败');
+                        });
+                }
+            },
+            resetSearchForm() {
+                this.searchForm = {
+                    id: '',
+                    name: '',
+                    age: '',
+                    sex: '',
+                    major: '',
+                    address: '',
+                    phone: '',
+                    startId: '',
+                    endId: ''
+                };
+                this.fetchStudents();
             }
         },
         mounted() {

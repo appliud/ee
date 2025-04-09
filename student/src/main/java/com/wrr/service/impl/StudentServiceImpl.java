@@ -43,4 +43,19 @@ public class StudentServiceImpl implements StudentService {
         student.setId(id+1);
         studentMapper.addStudent(student);
     }
+
+    @Override
+    public List<Student> getStudentByConditions(Student student) {
+        return studentMapper.getStudentByConditions(student);
+    }
+
+    @Override
+    public List<Student> getStudentByIdRange(Integer startId, Integer endId) {
+        return studentMapper.getStudentByIdRange(startId, endId);
+    }
+
+    @Override
+    public List<Student> getStudentBySex(String sex) {
+        return studentMapper.getStudentBySex(sex);
+    }
 }

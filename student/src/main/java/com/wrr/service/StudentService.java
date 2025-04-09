@@ -14,4 +14,10 @@ public interface StudentService {
     void deleteStudent(Integer id);
 
     void addStudent(Student student);
+
+    List<Student> getStudentByConditions(Student student);
+
+    List<Student> getStudentByIdRange(Integer startId, Integer endId);
+
+    List<Student> getStudentBySex(String sex);
 }

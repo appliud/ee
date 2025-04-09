@@ -63,4 +63,43 @@ public class StudentComtroller {
         studentServiceImpl.addStudent(student);
         return Result.success();
     }
+    /**
+     * 多条件查询学生信息
+     */
+    @PostMapping("/search")
+    public Result getStudentByConditions(@RequestBody Student student) {
+        log.info("多条件查询学生信息: {}", student);
+        List<Student> students = studentServiceImpl.getStudentByConditions(student);
+        return Result.success(students);
+    }
+    /**
+     * 按ID范围查询学生信息
+     */
+    @GetMapping("/range")
+    public Result getStudentByIdRange(@RequestParam Integer startId, @RequestParam Integer endId) {
+        if (startId == null || endId == null) {
+            return Result.error("起始ID和结束ID不能为空");
+        }
+        if (startId > endId) {
+            return Result.error("起始ID不能大于结束ID");
+        }
+        log.info("按ID范围查询学生信息: {} - {}", startId, endId);
+        List<Student> students = studentServiceImpl.getStudentByIdRange(startId, endId);
+        return Result.success(students);
+    }
+    /**
+     * 按性别查询学生信息
+     */
+    @GetMapping("/sex/{sex}")
+    public Result getStudentBySex(@PathVariable String sex) {
+        if (sex == null || sex.trim().isEmpty()) {
+            return Result.error("性别不能为空");
+        }
+        if (!sex.equals("男") && !sex.equals("女")) {
+            return Result.error("性别只能是'男'或'女'");
+        }
+        log.info("按性别查询学生信息: {}", sex);
+        List<Student> students = studentServiceImpl.getStudentBySex(sex);
+        return Result.success(students);
+    }
 }

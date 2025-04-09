@@ -12,24 +12,34 @@ import java.util.List;
  */
 @Mapper
 public interface StudentMapper {
-    @Select("select * from student")
+
     List<Student> getStudent();
 
-    @Select("select * from student where id=#{id}")
     Student getStudentById(Integer id);
 
-    @Update("update student set name=#{name},age=#{age},sex=#{sex},address=#{address},phone=#{phone} where id=#{id}")
     void updateStudent(Student student);
 
-    @Delete("delete from student where id=#{id}")
     void deleteStudent(Integer id);
 
-    @Insert("insert into student(id,name,age,sex,address,phone) values(#{id},#{name},#{age},#{sex},#{address},#{phone})")
     void addStudent(Student student);
 
     /**
      * 获取最大id
      */
-    @Select("select max(id) from student")
     Integer getMaxId();
+
+    /**
+     * 多条件查询学生信息
+     */
+    List<Student> getStudentByConditions(Student student);
+
+    /**
+     * 按ID范围查询学生信息
+     */
+    List<Student> getStudentByIdRange(@Param("startId") Integer startId, @Param("endId") Integer endId);
+
+    /**
+     * 按性别查询学生信息
+     */
+    List<Student> getStudentBySex(@Param("sex") String sex);
 }

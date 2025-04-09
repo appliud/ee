@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>带背景音乐的页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+            margin-top: 50px;
+        }
+        a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        audio {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        /* 图片容器样式 */
+        .image-container {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            margin-top: 50px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* 图片滚动样式 */
+        .scrolling-images {
+            display: inline-block;
+            animation: scroll-left 30s linear infinite;
+            padding: 10px 0;
+        }
+
+        /* 单个图片样式 */
+        .scrolling-images img {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            margin: 0 15px;
+            vertical-align: middle;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s ease;
+        }
+
+        /* 图片容器样式 */
+        .image-item {
+            display: inline-block;
+            text-align: center;
+            margin: 0 15px;
+            vertical-align: top;
+            transition: transform 0.3s ease;
+        }
+
+        /* 图片名称样式 */
+        .image-name {
+            margin-top: 10px;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            transition: opacity 0.3s ease;
+        }
+
+        /* 图片悬停效果 */
+        .image-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .image-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-item:hover .image-name {
+            opacity: 0.8;
+        }
+
+        /* 动画效果：从右到左滚动 */
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(-200px * 5 - 75px)); /* 调整移动距离以匹配5张图片 */
+            }
+        }
+
+        /* 添加暂停动画的类 */
+        .scrolling-images.paused {
+            animation-play-state: paused;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .scrolling-images img {
+                width: 150px;
+                height: 120px;
+                margin: 0 10px;
+            }
+        }
+
+        /* 渐变遮罩效果 */
+        .image-container::before,
+        .image-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 20%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .image-container::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(240, 248, 255, 1), rgba(240, 248, 255, 0));
+        }
+        .image-container::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(240, 248, 255, 1), rgba(240, 248, 255, 0));
+        }
+    </style>
+</head>
+<body>
+
+<!-- 页面标题 -->
+<h1>欢迎来到我的AI页面</h1>
+
+<!-- 文字超链接 -->
+<p>
+    点击下面的文字跳转到<a href="index.jsp" target="_blank">首页</a>。
+</p>
+
+<!-- 新增部分：添加图片并实现自左向右滚动和点击跳转 -->
+<div class="image-container" onclick="toggleScroll()">
+    <div class="scrolling-images" id="scrollingImages">
+        <!-- 第一组图片 -->
+        <div class="image-item">
+            <a href="https://www.doubao.com" target="_blank">
+                <img src="img/豆包.png" alt="豆包智能助手">
+            </a>
+            <div class="image-name">豆包智能助手</div>
+        </div>
+        <div class="image-item">
+            <a href="https://www.deepseek.com" target="_blank">
+                <img src="img/deepseek.jpg" alt="DeepSeek AI">
+            </a>
+            <div class="image-name">DeepSeek AI</div>
+        </div>
+        <div class="image-item">
+            <a href="https://www.xunfeixinghuo.com" target="_blank">
+                <img src="img/讯飞星火.jpg" alt="讯飞星火AI助手">
+            </a>
+            <div class="image-name">讯飞星火AI助手</div>
+        </div>
+        <div class="image-item">
+            <a href="https://www.chatgpt.com" target="_blank">
+                <img src="img/chatgpt.png" alt="chatgpt">
+            </a>
+            <div class="image-name">ChatGPT</div>
+        </div>
+        <div class="image-item">
+            <a href="https://yiyan.baidu.com" target="_blank">
+                <img src="img/yiyan-baidu-website.png" alt="yiyan AI">
+            </a>
+            <div class="image-name">文心一言</div>
+        </div>
+        <!-- 第二组图片（用于无缝衔接） -->
+        <div class="image-item">
+            <a href="https://www.doubao.com" target="_blank">
+                <img src="img/豆包.png" alt="豆包智能助手">
+            </a>
+            <div class="image-name">豆包智能助手</div>
+        </div>
+        <div class="image-item">
+            <a href="https://www.deepseek.com" target="_blank">
+                <img src="img/deepseek.jpg" alt="DeepSeek AI">
+            </a>
+            <div class="image-name">DeepSeek AI</div>
+        </div>
+        <div class="image-item">
+            <a href="https://www.xunfeixinghuo.com" target="_blank">
+                <img src="img/讯飞星火.jpg" alt="讯飞星火AI助手">
+            </a>
+            <div class="image-name">讯飞星火AI助手</div>
+        </div>
+        <div class="image-item">
+            <a href="https://www.chatgpt.com" target="_blank">
+                <img src="img/chatgpt.png" alt="chatgpt">
+            </a>
+            <div class="image-name">ChatGPT</div>
+        </div>
+        <div class="image-item">
+            <a href="https://yiyan.baidu.com" target="_blank">
+                <img src="img/yiyan-baidu-website.png" alt="yiyan AI">
+            </a>
+            <div class="image-name">文心一言</div>
+        </div>
+    </div>
+</div>
+
+<!-- 背景音乐 -->
+<audio controls autoplay loop>
+    <source src="music/王菲-世界赠予我的.mp3" type="audio/mpeg">
+    您的浏览器不支持音频播放。
+</audio>
+
+<script>
+    function toggleScroll() {
+        const scrollingImages = document.getElementById('scrollingImages');
+        scrollingImages.classList.toggle('paused');
+    }
+
+    // 鼠标悬停时暂停滚动
+    document.querySelector('.image-container').addEventListener('mouseenter', function() {
+        document.getElementById('scrollingImages').classList.add('paused');
+    });
+
+    // 鼠标离开时继续滚动
+    document.querySelector('.image-container').addEventListener('mouseleave', function() {
+        document.getElementById('scrollingImages').classList.remove('paused');
+    });
+</script>
+
+</body>
+</html>

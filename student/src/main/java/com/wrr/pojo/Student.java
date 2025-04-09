@@ -19,4 +19,5 @@ public class Student {
     private String sex;
     private String address;
     private String phone;
+    private String major;
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T型框架网站</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #0056b3;
+            border-radius: 5px;
+        }
+        .header a:hover {
+            background-color: #004494;
+        }
+        .sidebar {
+            float: left;
+            width: 50%;
+            background-color: #f0f0f0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .main-content {
+            float: right;
+            width: 50%;
+            background-color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .footer {
+            clear: both;
+            text-align: center;
+            padding: 10px;
+            background-color: #003366;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        T型框架网站
+        <a href="index.jsp">返回首页</a>
+    </div>
+    <div class="sidebar">
+        <h3>最新动态</h3>
+        <ul>
+            <li>[2025-03-31] 发布新文章《如何设计T型布局》</li>
+            <li>[2025-03-30] 更新了关于我们页面</li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <h2>欢迎来到T型框架网站！</h2>
+        <p>我们专注于为您提供简洁高效的浏览体验。</p>
+        <img src="example.jpg" alt="示例图片" width="300">
+    </div>
+    <div class="footer">版权所有 © 2025 T型框架网站</div>
+</body>
+</html>
